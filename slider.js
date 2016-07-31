@@ -9,13 +9,16 @@
     var count = 0,
         maxCount,
         instance = 0,
+		animationSpeed = 2000, // 1 second delay
+		pause = 3000,
         document = window.document;
 
     $.fn.slider = function(options) {
             var defaults = {
                 files: [],
                 width: null,
-                height: null
+                height: null,
+				autoslide: false
             };
 
             var opts = $.extend(true, {}, defaults, options);
@@ -28,6 +31,10 @@
                 maxCount = opts.files.length;
                 $.slider.control.create(this, opts);
                 $.slider.core.create(this, opts);
+				if(opts.autoslide)
+					$.slider.control.autosliding(this, opts);
+				else
+					$.slider.control.eventHandler(this, opts);
             }
         }
     
@@ -86,26 +93,58 @@
     $.slider.control = {
         create : function(el, options) {
             el.html('<div id="slide-control" style="top:' + options.height / 2 + 'px"><div class="slide-prev">Previous</div><div class="slide-next" >Next</div></div>');
-			this.eventHandler(el, options);
-        },
+		},
+		autosliding : function(el, options){
+			$("#slide-control").hide();
+			
+			var w = options.width,
+				interval;
+			
+			//cache DOM
+			var $slider = $(el),
+				$slidesContainer = $slider.find(".slides");
+			
+			function startSlide(){
+				interval = setInterval(function(){
+					$slidesContainer.animate({'margin-left': '-='+w},animationSpeed,function(){
+						count++;
+						if(count === maxCount - 1){
+							count = 0;
+							$slidesContainer.css("margin-left",0);					
+						}
+										
+					});				
+				},pause);				
+			}
+
+			function stopSlide(){
+				clearInterval(interval);				
+			}
+			
+			$slider.on("mousemove",stopSlide).on("mouseout",startSlide);
+			
+		},
 		eventHandler : function(el, options){
+			var $slider = $(el);
 			var w = options.width,
 			    n = this.next.bind(this,w),
 			    p = this.prev.bind(this,w);
 				
-			$(".slide-next").on("click",function(){
+			$(".slide-next").on("click",function(event){
 				n();
+				event.stopPropagation();
 			});
 			$(".slide-prev").on("click",function(){
 				p();
+				event.stopPropagation();
 			});
 			
 			var sX = 0,sY = 0, thresholdDistance = 60, thresholdCorner = 15;			
-			$(el).on("mousedown",function(event){				
+			$slider.on("mousedown",function(event){				
 				sX = event.offsetX;
 				sY = event.offsetY;
 			});
-			$(el).on("mousemove",function(event){
+			$slider.on("mousemove",function(event){
 					var eX = event.offsetX, eY = event.offsetY;		
 					if( sX!=0 && (Math.abs(sX - eX) > thresholdDistance) && (Math.abs(sY - eY) < thresholdCorner)){
 						if((count !== (maxCount - 1)) && ((sX - eX) > 0)){
