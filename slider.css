@@ -13,23 +13,21 @@
 	list-style : none;
 }
 
-#slide-control{
+.slide-control{
 	font-size: 16px;
-	color : white;
-	font-weight : bold;
-	position: absolute;
-	cursor : pointer;
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    cursor: pointer;
+    top: 50%;
+    padding: 10px;
+    background: red;
+    border: 1px solid #bbb7b7;
 }
 
-#slide-control .slide-prev{
-	left: 10px;
-    float: left;
-	padding: 10px;
-    background: red;
+.slide-prev{
+	left : 0;
 }
-#slide-control .slide-next{
-	left : 648px;
-	position: absolute;
-	padding: 10px;
-    background: red;
+.slide-next{
+	right : 0;
 }

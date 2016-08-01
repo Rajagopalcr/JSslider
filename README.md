@@ -4,7 +4,18 @@ This is a simple jQuery slider plugin.
 
 You can see the basic example in slider.html
 
-It can be used on any DOM element and it takes three inputs like an array of files, width and height of the DOM element.
+You can move forward/backward by swiping from left to right and vice versa using mouse.
 
-This plugin provides swipe options also. You can swipe from left to right and vice versa.
+You can select the slider by tabing and can do forward/backward by keyboard arrows as well.
+
+It also provides an option for slideshow (autoslide : true, by default it will be false).
+
+Example: 
+
+	$("#sli").slider({
+		files : _temp,
+		width : 700,
+		height : 400,
+		autoslide : true,
+	});
 
